@@ -64,6 +64,7 @@ class NewsResource extends Resource
                 Tables\Columns\TextColumn::make('title')
                     ->label('Title')
                     ->sortable()
+                    ->wrap()
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\ToggleColumn::make('is_published')

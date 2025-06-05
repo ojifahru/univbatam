@@ -17,7 +17,7 @@ class IdentitySettings extends Page implements HasForms
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
     protected static string $view = 'filament.pages.identity-settings';
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $navigationGroup = 'University Management';
     protected static ?string $navigationLabel = 'University Identity';
     protected static ?int $navigationSort = 1;
 
@@ -57,8 +57,9 @@ class IdentitySettings extends Page implements HasForms
                             ->label('University Name')
                             ->required()
                             ->maxLength(255)
-                            ->columnSpanFull(),
-
+                            ->columnSpanFull()
+                            ->translateLabel(true)
+                            ->helperText('The official name of the university. This will be used across the website and in communications.'),
                         Components\TextInput::make('email')
                             ->label('Email Address')
                             ->email()

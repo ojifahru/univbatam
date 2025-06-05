@@ -18,6 +18,11 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\SpatieLaravelTranslatablePlugin;
+use Filament\Widgets\StatsOverviewWidget;
+use App\Filament\Widgets\LatestNewsWidget;
+use App\Filament\Widgets\VisitorsChartWidget;
+use App\Filament\Widgets\VisitorsOverviewWidget;
+use App\Filament\Widgets\VisitorDetailsWidget;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -28,12 +33,16 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->profile(isSimple: false)
             ->colors([
                 'primary' => Color::Amber,
             ])
             ->navigationGroups([
+                'University Management',
                 'Academic Management',
                 'Content Management',
+                'Website Settings',
+                'User Management',
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -42,8 +51,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                StatsOverviewWidget::class,
+                VisitorsOverviewWidget::class,
+                LatestNewsWidget::class,
+                VisitorsChartWidget::class,
+                VisitorDetailsWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

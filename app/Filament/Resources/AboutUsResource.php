@@ -17,7 +17,9 @@ class AboutUsResource extends Resource
 
     protected static ?string $model = AboutUs::class;
     protected static ?string $navigationIcon = 'heroicon-o-information-circle';
-    protected static ?string $navigationLabel = 'About Us';
+    protected static ?string $navigationLabel = 'Profile Information';
+    protected static ?string $navigationGroup = 'University Management';
+    protected static ?int $navigationSort = 10;
 
     public static function form(Form $form): Form
     {

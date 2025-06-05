@@ -19,6 +19,14 @@ return Application::configure(basePath: dirname(__DIR__))
             'localeCookieRedirect' => \Mcamara\LaravelLocalization\Middleware\LocaleCookieRedirect::class,
             'localeViewPath' => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath::class,
         ]);
+
+        // Daftarkan middleware TrackVisitorMiddleware untuk web group
+        $middleware->web(append: [
+            \App\Http\Middleware\TrackVisitorMiddleware::class
+        ]);
+
+        // Opsional: Jika ingin mendaftarkan pada middleware global
+        // $middleware->append(\App\Http\Middleware\TrackVisitorMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
