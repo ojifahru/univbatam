@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-use App\Models\logo;
+use App\Models\Logo;
 use App\Models\Identity;
 use App\Models\Facility;
 use App\Models\Category;
