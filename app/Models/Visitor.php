@@ -28,7 +28,7 @@ class Visitor extends Model
     {
         return preg_match('/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|plucker|pocket|psp|symbian|smartphone|sony|treo|up\.browser|up\.link|webos|wos)/i', $userAgent);
     }
-    
+
     /**
      * Periksa apakah pengunjung dari tablet
      */
@@ -36,7 +36,7 @@ class Visitor extends Model
     {
         return preg_match('/(tablet|ipad|playbook|silk)|(android(?!.*mobile))/i', $userAgent);
     }
-    
+
     /**
      * Periksa apakah pengunjung adalah bot atau crawler
      * Dan kembalikan nama bot jika terdeteksi
@@ -64,8 +64,8 @@ class Visitor extends Model
             'MJ12Bot' => 'mj12bot',
             'ScreamingFrog' => 'screaming frog',
             'Python' => 'python-requests',
-            'Curl' => 'curl/',
-            'Wget' => 'wget/',
+            'Curl' => 'curl',      // Hapus escape yang bermasalah
+            'Wget' => 'wget',      // Hapus escape yang bermasalah
             'Scraper' => 'scraper',
             'Crawler' => 'crawler',
             'Spider' => 'spider',
@@ -73,34 +73,46 @@ class Visitor extends Model
             'Exploit Scanner' => 'nmap|nikto|sqlmap|vulnerscan|acunetix',
             'Generic Bot' => 'bot|crawl|slurp|spider|mediapartners',
         ];
-        
+
         $lowerUserAgent = strtolower($userAgent);
         foreach ($botPatterns as $name => $pattern) {
-            if (preg_match('/' . $pattern . '/i', $lowerUserAgent)) {
+            // Gunakan delimiter # sebagai pengganti / untuk menghindari konflik
+            if (preg_match('#' . $pattern . '#i', $lowerUserAgent)) {
                 return [
                     'is_bot' => true,
                     'bot_name' => $name
                 ];
             }
         }
-        
+
         // Deteksi malicious requests (potential security exploits)
         $maliciousPatterns = [
-            'shell_exec', 'eval\(', 'base64_decode', '<?php',
-            'system\(', 'passthru', 'exec\(', '<script',
-            'union\s+select', 'concat\(', 'information_schema'
+            'shell_exec',
+            'eval\(',
+            'base64_decode',
+            '<\?php',
+            'system\(',
+            'passthru',
+            'exec\(',
+            '<script',
+            'union\s+select',
+            'concat\(',
+            'information_schema'
         ];
-        
+
         foreach ($maliciousPatterns as $pattern) {
-            if (preg_match('/' . $pattern . '/i', $userAgent) || 
-                preg_match('/' . $pattern . '/i', urldecode($userAgent))) {
+            // Gunakan delimiter # sebagai pengganti / untuk menghindari konflik
+            if (
+                preg_match('#' . $pattern . '#i', $userAgent) ||
+                preg_match('#' . $pattern . '#i', urldecode($userAgent))
+            ) {
                 return [
                     'is_bot' => true,
                     'bot_name' => 'Malicious Bot'
                 ];
             }
         }
-        
+
         return [
             'is_bot' => false,
             'bot_name' => null
@@ -114,7 +126,7 @@ class Visitor extends Model
     {
         return $query->where('is_bot', false);
     }
-    
+
     /**
      * Scope untuk query hanya pengunjung bot
      */
@@ -133,7 +145,7 @@ class Visitor extends Model
             ->distinct('ip_address')
             ->count('ip_address');
     }
-    
+
     /**
      * Dapatkan total halaman yang dikunjungi
      */
@@ -143,7 +155,7 @@ class Visitor extends Model
             ->humansOnly()
             ->count();
     }
-    
+
     /**
      * Dapatkan halaman yang paling banyak dikunjungi
      */
@@ -157,7 +169,7 @@ class Visitor extends Model
             ->get()
             ->toArray();
     }
-    
+
     /**
      * Hitung bots berdasarkan rentang waktu
      */
@@ -167,7 +179,7 @@ class Visitor extends Model
             ->botsOnly()
             ->count();
     }
-    
+
     /**
      * Dapatkan statistik bot per jenis
      */
