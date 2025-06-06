@@ -69,6 +69,7 @@ class AdminPanelProvider extends PanelProvider
             ->plugin(
                 SpatieLaravelTranslatablePlugin::make()
                     ->defaultLocales(['id', 'en']),
-            );
+            )
+            ->favicon(asset('images/favicon.png'));
     }
 }
