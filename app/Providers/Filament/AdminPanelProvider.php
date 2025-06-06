@@ -34,6 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->profile(isSimple: false)
             ->navigationGroups([
                 'University Management',
                 'Academic Management',
