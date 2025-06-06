@@ -17,7 +17,7 @@ class IdentitySettings extends Page implements HasForms
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
     protected static string $view = 'filament.pages.identity-settings';
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $navigationGroup = 'University Management';
     protected static ?string $navigationLabel = 'University Identity';
     protected static ?int $navigationSort = 1;
 

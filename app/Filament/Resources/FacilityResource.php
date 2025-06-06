@@ -17,9 +17,12 @@ use Filament\Resources\Concerns\Translatable;
 class FacilityResource extends Resource
 {
     use Translatable;
-    protected static ?string $model = Facility::class;
 
+    protected static ?string $model = Facility::class;
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
+    protected static ?string $navigationLabel = 'Facilities';
+    protected static ?string $navigationGroup = 'University Management';
+    protected static ?int $navigationSort = 20;
 
     public static function form(Form $form): Form
     {

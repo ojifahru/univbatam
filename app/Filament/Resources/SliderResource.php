@@ -18,7 +18,7 @@ class SliderResource extends Resource
     protected static ?string $model = Slider::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-photo';
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $navigationGroup = 'Website Settings';
     protected static ?string $navigationLabel = 'Sliders';
     protected static ?int $navigationSort = 3;
 

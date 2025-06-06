@@ -21,8 +21,7 @@ class FacultyResource extends Resource
 
     protected static ?String $navigationLabel = 'Faculties';
     protected static ?string $navigationGroup = 'Academic Management';
-    protected static ?int $navigationSort = 1;
-
+    protected static ?int $navigationSort = 20;
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
     public static function form(Form $form): Form

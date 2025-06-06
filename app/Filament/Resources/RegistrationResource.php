@@ -17,9 +17,12 @@ use Filament\Resources\Concerns\Translatable;
 class RegistrationResource extends Resource
 {
     use Translatable;
-    protected static ?string $model = Registration::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $model = Registration::class;
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static ?string $navigationLabel = 'Registration Information';
+    protected static ?string $navigationGroup = 'Registration';
+    protected static ?int $navigationSort = 10;
 
     public static function form(Form $form): Form
     {

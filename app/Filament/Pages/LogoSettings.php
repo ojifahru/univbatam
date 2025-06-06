@@ -18,10 +18,9 @@ class LogoSettings extends Page implements HasForms
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static string $view = 'filament.pages.logo-settings';
-    protected static ?string $navigationGroup = 'Settings';
     protected static ?string $navigationLabel = 'Logo Settings';
-    protected static ?int $navigationSort = 2;
-
+    protected static ?string $navigationGroup = 'Website Settings';
+    protected static ?int $navigationSort = 10;
     // Define the form data property
     public ?array $data = [];
 
