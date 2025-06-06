@@ -28,7 +28,7 @@ class ViewServiceProvider extends ServiceProvider
     {
         // View composer untuk logo
         View::composer('*', function ($view) {
-            $logo = logo::first();
+            $logo = Logo::first();
             $view->with('logo', $logo);
         });
 
