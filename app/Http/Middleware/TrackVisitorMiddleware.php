@@ -17,10 +17,13 @@ class TrackVisitorMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Skip tracking for admin routes, API, etc.
+        // Skip tracking untuk admin routes, API, assets
         if (
             str_starts_with($request->path(), 'admin') ||
             str_starts_with($request->path(), 'api') ||
+            str_starts_with($request->path(), 'assets') ||
+            str_starts_with($request->path(), 'storage') ||
+            str_starts_with($request->path(), '_ignition') ||
             $request->is('livewire/*') ||
             $request->ajax()
         ) {
@@ -29,13 +32,37 @@ class TrackVisitorMiddleware
 
         // Hanya track GET requests
         if ($request->method() === 'GET') {
+            $userAgent = $request->userAgent() ?: '';
             $agent = new Agent();
-
+            
+            // Deteksi bot menggunakan model Visitor
+            $botInfo = Visitor::detectBot($userAgent);
+            $isBot = $botInfo['is_bot'];
+            $botName = $botInfo['bot_name'];
+            
+            // Jika bot dideteksi oleh Agent library juga
             if ($agent->isRobot()) {
+                $isBot = true;
+                $botName = $botName ?: $agent->robot();
+            }
+
+            // Track bot tanpa mengecek visit terbaru
+            if ($isBot) {
+                Visitor::create([
+                    'ip_address' => $request->ip(),
+                    'user_agent' => $userAgent,
+                    'page_visited' => $request->fullUrl(),
+                    'referer_url' => $request->headers->get('referer'),
+                    'country' => null, // Tidak perlu geo-lokasi untuk bot
+                    'device_type' => 'bot', // Tandai tipe perangkat sebagai bot
+                    'is_bot' => true,
+                    'bot_name' => $botName,
+                ]);
+                
                 return $next($request);
             }
 
-            // Tentukan tipe device
+            // Tentukan tipe device untuk pengunjung manusia
             $deviceType = 'desktop';
             if ($agent->isTablet()) {
                 $deviceType = 'tablet';
@@ -43,7 +70,7 @@ class TrackVisitorMiddleware
                 $deviceType = 'mobile';
             }
 
-            // Simpan data pengunjung
+            // Deteksi lokasi (hanya untuk manusia)
             try {
                 // Handle local development environment (Herd)
                 if (in_array($request->ip(), ['127.0.0.1', '::1']) || app()->environment('local')) {
@@ -66,11 +93,13 @@ class TrackVisitorMiddleware
             if (!$recentVisit) {
                 Visitor::create([
                     'ip_address' => $request->ip(),
-                    'user_agent' => $request->userAgent(),
+                    'user_agent' => $userAgent,
                     'page_visited' => $request->fullUrl(),
                     'referer_url' => $request->headers->get('referer'),
                     'country' => $country,
                     'device_type' => $deviceType,
+                    'is_bot' => false,
+                    'bot_name' => null,
                 ]);
             }
         }

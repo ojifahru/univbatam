@@ -13,24 +13,34 @@ class VisitorsOverviewWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        // Pengunjung hari ini
-        $visitorsToday = Visitor::whereDate('created_at', Carbon::today())->count();
+        // Pengunjung manusia hari ini
+        $visitorsToday = Visitor::whereDate('created_at', Carbon::today())
+            ->humansOnly()
+            ->count();
+            
         $uniqueVisitorsToday = Visitor::whereDate('created_at', Carbon::today())
+            ->humansOnly()
             ->distinct('ip_address')
             ->count('ip_address');
             
-        // Pengunjung kemarin untuk perbandingan
-        $visitorsYesterday = Visitor::whereDate('created_at', Carbon::yesterday())->count();
+        // Pengunjung manusia kemarin untuk perbandingan
+        $visitorsYesterday = Visitor::whereDate('created_at', Carbon::yesterday())
+            ->humansOnly()
+            ->count();
+            
         $uniqueVisitorsYesterday = Visitor::whereDate('created_at', Carbon::yesterday())
+            ->humansOnly()
             ->distinct('ip_address')
             ->count('ip_address');
             
-        // Pengunjung minggu ini
-        $startOfWeek = Carbon::now()->startOfWeek();
-        $visitorsThisWeek = Visitor::where('created_at', '>=', $startOfWeek)->count();
-        $uniqueVisitorsThisWeek = Visitor::where('created_at', '>=', $startOfWeek)
-            ->distinct('ip_address')
-            ->count('ip_address');
+        // Bot hari ini dan kemarin
+        $botsToday = Visitor::whereDate('created_at', Carbon::today())
+            ->botsOnly()
+            ->count();
+            
+        $botsYesterday = Visitor::whereDate('created_at', Carbon::yesterday())
+            ->botsOnly()
+            ->count();
             
         // Hitung persentase perubahan
         $visitorChange = ($visitorsYesterday > 0) 
@@ -40,31 +50,36 @@ class VisitorsOverviewWidget extends BaseWidget
         $uniqueVisitorChange = ($uniqueVisitorsYesterday > 0)
             ? round((($uniqueVisitorsToday - $uniqueVisitorsYesterday) / $uniqueVisitorsYesterday) * 100)
             : 0;
+            
+        $botChange = ($botsYesterday > 0)
+            ? round((($botsToday - $botsYesterday) / $botsYesterday) * 100)
+            : 0;
+
+        // Data 7 hari terakhir untuk chart
+        $visitorData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::today()->subDays($i);
+            $visitorData[] = Visitor::whereDate('created_at', $date)
+                ->humansOnly()
+                ->count();
+        }
 
         return [
-            Stat::make('Pengunjung Hari Ini', $visitorsToday)
+            Stat::make('Pengunjung Manusia Hari Ini', $visitorsToday)
                 ->description($visitorChange >= 0 ? "+ {$visitorChange}% dari kemarin" : "- " . abs($visitorChange) . "% dari kemarin")
                 ->descriptionIcon($visitorChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($visitorChange >= 0 ? 'success' : 'danger')
-                ->chart([
-                    Visitor::whereDate('created_at', Carbon::today()->subDays(6))->count(),
-                    Visitor::whereDate('created_at', Carbon::today()->subDays(5))->count(),
-                    Visitor::whereDate('created_at', Carbon::today()->subDays(4))->count(),
-                    Visitor::whereDate('created_at', Carbon::today()->subDays(3))->count(),
-                    Visitor::whereDate('created_at', Carbon::today()->subDays(2))->count(),
-                    Visitor::whereDate('created_at', Carbon::today()->subDays(1))->count(),
-                    $visitorsToday,
-                ]),
+                ->chart($visitorData),
 
             Stat::make('Pengunjung Unik Hari Ini', $uniqueVisitorsToday)
                 ->description($uniqueVisitorChange >= 0 ? "+ {$uniqueVisitorChange}% dari kemarin" : "- " . abs($uniqueVisitorChange) . "% dari kemarin")
                 ->descriptionIcon($uniqueVisitorChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($uniqueVisitorChange >= 0 ? 'success' : 'danger'),
 
-            Stat::make('Total Minggu Ini', $visitorsThisWeek)
-                ->description("{$uniqueVisitorsThisWeek} pengunjung unik minggu ini")
-                ->descriptionIcon('heroicon-m-users')
-                ->color('primary'),
+            Stat::make('Bot/Crawler Hari Ini', $botsToday)
+                ->description($botChange >= 0 ? "+ {$botChange}% dari kemarin" : "- " . abs($botChange) . "% dari kemarin")
+                ->descriptionIcon($botChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
+                ->color('warning'),
         ];
     }
 }

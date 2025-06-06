@@ -18,7 +18,7 @@ class VisitorDetailsWidget extends BaseWidget
     {
         return $table
             ->query(
-                Visitor::query()->latest()->limit(10)
+                Visitor::query()->latest()->limit(50)
             )
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
@@ -45,9 +45,20 @@ class VisitorDetailsWidget extends BaseWidget
                         match($state) {
                             'mobile' => 'success',
                             'tablet' => 'warning',
+                            'bot' => 'danger',
                             default => 'info',
                         }
                     ),
+                    
+                Tables\Columns\IconColumn::make('is_bot')
+                    ->label('Bot')
+                    ->boolean()
+                    ->trueColor('danger')
+                    ->tooltip(fn (Visitor $record): ?string => $record->bot_name),
+                    
+                Tables\Columns\TextColumn::make('bot_name')
+                    ->label('Jenis Bot')
+                    ->placeholder('-'),
                     
                 Tables\Columns\TextColumn::make('ip_address')
                     ->label('IP Address')
@@ -73,6 +84,14 @@ class VisitorDetailsWidget extends BaseWidget
                         'desktop' => 'Desktop',
                         'mobile' => 'Mobile',
                         'tablet' => 'Tablet',
+                        'bot' => 'Bot',
+                    ]),
+                
+                Tables\Filters\SelectFilter::make('is_bot')
+                    ->label('Tipe Visitor')
+                    ->options([
+                        '0' => 'Manusia',
+                        '1' => 'Bot/Crawler',
                     ]),
                     
                 Tables\Filters\Filter::make('today')
@@ -83,6 +102,7 @@ class VisitorDetailsWidget extends BaseWidget
                     ->label('Kemarin')
                     ->query(fn ($query) => $query->whereDate('created_at', Carbon::yesterday())),
             ])
+            ->defaultSort('created_at', 'desc')
             ->heading('Pengunjung Terbaru');
     }
 }
