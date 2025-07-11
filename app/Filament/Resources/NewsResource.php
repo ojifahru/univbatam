@@ -22,6 +22,12 @@ class NewsResource extends Resource
     protected static ?string $navigationGroup = 'Content Management';
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()
+            ->with(['category', 'user']);
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -60,6 +66,8 @@ class NewsResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultPaginationPageOption(10)
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->label('Title')

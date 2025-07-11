@@ -52,6 +52,7 @@ class AdminPanelProvider extends PanelProvider
                 StatsOverview::class,
                 LatestNewsWidget::class,
             ])
+            ->maxContentWidth('full')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

@@ -12,7 +12,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Increase memory limit to 1GB
+        ini_set('memory_limit', '1024M');
     }
 
     /**
