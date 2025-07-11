@@ -15,7 +15,7 @@
                             <div
                                 style="background: url('{{ asset('css/templateweb/images/world-map.png') }}') no-repeat center center; background-size: 100%;">
                                 <img src="{{ asset('storage/' . $logo->footer_logo) }}" alt="Footer Logo"
-                                    class="footer-logo">
+                                    class="footer-logo" height="150px">
                                 <address>
                                     <strong>{{ $identity->name }}</strong><br>
                                     {{ $identity->address }} || <i class="fa fa-phone" style="color: #FFCC00"></i>

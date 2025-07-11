@@ -1,4 +1,4 @@
-        <!-- Header -->
+<!-- Header -->
         <header id="header">
             <div id="header-wrap">
                 <div class="container">
@@ -7,7 +7,7 @@
                         <div id="logo" class="order-lg-2 col-auto px-0 me-lg-0">
                             <!-- Logo -->
                             <a href="{{ route('home') }}" class="logo text-decoration-none">
-                                <img class="logo-default" style="height:auto;"
+                                <img class="logo-default"  height="73"
                                     src="{{ asset('storage/' . $logo['logo']) }}" alt="Logo-Universitas-Batam">
                             </a>
                         </div>
